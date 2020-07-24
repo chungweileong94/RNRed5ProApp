@@ -15,7 +15,7 @@ const App = () => {
       <NavigationContainer>
         <AppStack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
           <AppStack.Screen name="Home" component={HomeScreen} />
-          <AppStack.Screen name="Broadcast" component={BroadcastScreen} />
+          <AppStack.Screen name="Broadcast" component={BroadcastScreen} options={{gestureEnabled: false}} />
         </AppStack.Navigator>
       </NavigationContainer>
     </>
