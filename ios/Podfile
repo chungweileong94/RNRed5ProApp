@@ -25,6 +25,14 @@ target 'RNRed5ProApp' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
+
+    installer.pods_project.targets.each do |target|
+      if target.name == 'R5VideoView'
+        target.build_configurations.each do |config|
+          config.build_settings['FRAMEWORK_SEARCH_PATHS'] = '$(SRCROOT)/../Frameworks'
+        end
+      end
+    end
   end
 end
 
