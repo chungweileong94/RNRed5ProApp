@@ -1,15 +1,16 @@
-import React, {useRef, useMemo, useImperativeHandle, forwardRef, useState} from 'react';
+import React, {useRef, useMemo, useImperativeHandle, forwardRef, useState, useCallback} from 'react';
 import {findNodeHandle, View, StyleSheet} from 'react-native';
-import {R5VideoView, R5LogLevel, publish, unpublish, swapCamera} from 'react-native-red5pro';
+import {R5VideoView, R5LogLevel, publish, unpublish, swapCamera, unmuteAudio, unmuteVideo} from 'react-native-red5pro';
 import {v4 as uuidv4} from 'uuid';
+import Icon from 'react-native-vector-icons/Feather';
 
 const BroadcastView = (_, ref) => {
   const videoRef = useRef(null);
-  const [isConfigured, setIsConfigured] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   const configuration = useMemo(
     () => ({
-      host: '10.1.10.102',
+      host: '10.1.10.103',
       port: 8554,
       contextName: 'live',
       bufferTime: 0.5,
@@ -22,11 +23,13 @@ const BroadcastView = (_, ref) => {
     [],
   );
 
-  const onConfigured = () => {
-    setIsConfigured(true);
-  };
+  const onConfigured = useCallback(() => {
+    const {streamName} = configuration;
+    publish(findNodeHandle(videoRef.current), streamName);
+  }, [configuration]);
 
   const onPublisherStreamStatus = status => {
+    setIsReady(true);
     console.log(status.nativeEvent.status);
   };
 
@@ -37,11 +40,6 @@ const BroadcastView = (_, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      publish: () => {
-        if (!isConfigured) return;
-        const {streamName} = configuration;
-        publish(findNodeHandle(videoRef.current), streamName);
-      },
       unpublish: () => {
         unpublish(findNodeHandle(videoRef.current));
       },
@@ -49,7 +47,7 @@ const BroadcastView = (_, ref) => {
         swapCamera(findNodeHandle(videoRef.current));
       },
     }),
-    [configuration, isConfigured],
+    [],
   );
 
   return (
@@ -65,6 +63,11 @@ const BroadcastView = (_, ref) => {
         onUnpublishNotification={onUnpublishNotification}
         style={styles.video}
       />
+      {!isReady && (
+        <View style={styles.placeHolder}>
+          <Icon name="video" size={40} color="white" />
+        </View>
+      )}
     </View>
   );
 };
@@ -74,6 +77,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   video: {flex: 1, backgroundColor: 'black'},
+  placeHolder: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.5,
+  },
 });
 
 export default forwardRef(BroadcastView);

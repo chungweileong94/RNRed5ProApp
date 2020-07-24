@@ -13,7 +13,7 @@ const App = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <NavigationContainer>
-        <AppStack.Navigator>
+        <AppStack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
           <AppStack.Screen name="Home" component={HomeScreen} />
           <AppStack.Screen name="Broadcast" component={BroadcastScreen} />
         </AppStack.Navigator>

@@ -1,6 +1,6 @@
-import React, {useRef, useEffect, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useRef, useEffect, useCallback, useLayoutEffect} from 'react';
+import {View, StyleSheet, BackHandler} from 'react-native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 import BroadcastView from '../components/BroadcastView';
 import IconButton from '../components/IconButton';
@@ -10,23 +10,43 @@ const BroadcastScreen = () => {
   const navigation = useNavigation();
   const broadcastRef = useRef(null);
 
-  const handleOnStartPress = useCallback(() => {
-    broadcastRef.current.publish();
-  }, []);
+  const handleOnStopPress = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   const handleOnSwapCameraPress = useCallback(() => {
     broadcastRef.current.swapCamera();
   }, []);
 
-  useEffect(() => {
-    navigation.setOptions({headerRight: () => <IconButton iconName="repeat" onPress={handleOnSwapCameraPress} />});
-  }, [handleOnStartPress, handleOnSwapCameraPress, navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <IconButton iconName="repeat" onPress={handleOnSwapCameraPress} />,
+      headerLeft: () => null,
+    });
+  }, [handleOnSwapCameraPress, navigation]);
+
+  useEffect(
+    () => () => {
+      broadcastRef.current.unpublish();
+    },
+    [],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => true;
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
       <BroadcastView ref={broadcastRef} />
       <View style={styles.startButtonWrapper}>
-        <Button label="Start" leftIconName="play" onPress={handleOnStartPress} />
+        <Button label="Stop" leftIconName="x" onPress={handleOnStopPress} />
       </View>
     </View>
   );
