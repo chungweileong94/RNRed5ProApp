@@ -1,0 +1,11 @@
+diff --git a/node_modules/react-native-red5pro/android/build.gradle b/node_modules/react-native-red5pro/android/build.gradle
+index 6456fdf..155e359 100644
+--- a/node_modules/react-native-red5pro/android/build.gradle
++++ b/node_modules/react-native-red5pro/android/build.gradle
+@@ -19,5 +19,5 @@ android {
+ 
+ dependencies {
+     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
+-    implementation files("../example/Red5ProVideoViewExample/android/app/libs/red5streaming.jar")
++    implementation files("../../../android/app/libs/red5streaming.jar")
+ }
