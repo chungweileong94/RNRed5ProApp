@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "extends": [
+    "@react-native-community",
+    "whiteroom-react"
+  ],
+  "rules": {
+    "no-use-before-define": "off"
+  }
+}
