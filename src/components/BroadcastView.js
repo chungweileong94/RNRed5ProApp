@@ -1,9 +1,10 @@
-import React, {useRef, useMemo, useImperativeHandle, forwardRef, useState, useCallback, useEffect} from 'react';
-import {findNodeHandle, View, StyleSheet} from 'react-native';
+import React, {useRef, useMemo, useImperativeHandle, forwardRef, useState, useCallback} from 'react';
+import {findNodeHandle, View, StyleSheet, InteractionManager} from 'react-native';
 import {R5VideoView, R5LogLevel, publish, unpublish, swapCamera} from 'react-native-red5pro';
 import {v4 as uuidv4} from 'uuid';
 import Icon from 'react-native-vector-icons/Feather';
 import KeepAwake from 'react-native-keep-awake';
+import {useFocusEffect} from '@react-navigation/native';
 
 const BroadcastView = (_, ref) => {
   const videoRef = useRef(null);
@@ -14,7 +15,7 @@ const BroadcastView = (_, ref) => {
     const uid = uuidv4();
 
     return {
-      host: '10.1.10.103',
+      host: '192.168.68.111',
       port: 8554,
       contextName: 'live',
       bufferTime: 0.5,
@@ -52,22 +53,18 @@ const BroadcastView = (_, ref) => {
     [],
   );
 
-  useEffect(() => {
-    let timeout = null;
+  useFocusEffect(
+    useCallback(() => {
+      const task = InteractionManager.runAfterInteractions(() => {
+        if (isConfigured && !isReady) {
+          const {streamName} = configuration;
+          publish(findNodeHandle(videoRef.current), streamName);
+        }
+      });
 
-    if (isConfigured && !isReady) {
-      timeout = setTimeout(() => {
-        const {streamName} = configuration;
-        publish(findNodeHandle(videoRef.current), streamName);
-      }, 500);
-    }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [configuration, isConfigured, isReady]);
+      return () => task.cancel();
+    }, [configuration, isConfigured, isReady]),
+  );
 
   return (
     <View style={styles.container}>
