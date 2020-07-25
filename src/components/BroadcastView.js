@@ -73,7 +73,7 @@ const BroadcastView = (_, ref) => {
         ref={videoRef}
         configuration={configuration}
         enableBackgroundStreaming
-        showDebugView
+        // showDebugView
         logLevel={R5LogLevel.DEBUG}
         onConfigured={onConfigured}
         onPublisherStreamStatus={onPublisherStreamStatus}

@@ -1,6 +1,7 @@
 import React, {useRef, useEffect, useCallback, useLayoutEffect} from 'react';
 import {View, StyleSheet, BackHandler} from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {useHeaderHeight} from '@react-navigation/stack';
 
 import BroadcastView from '../components/BroadcastView';
 import IconButton from '../components/IconButton';
@@ -8,6 +9,7 @@ import Button from '../components/Button';
 
 const BroadcastScreen = () => {
   const navigation = useNavigation();
+  const headerHeight = useHeaderHeight();
   const broadcastRef = useRef(null);
 
   const handleOnStopPress = useCallback(() => {
@@ -22,8 +24,12 @@ const BroadcastScreen = () => {
     navigation.setOptions({
       headerRight: () => <IconButton iconName="repeat" onPress={handleOnSwapCameraPress} />,
       headerLeft: () => null,
+      headerStyle: {
+        height: headerHeight,
+      },
+      headerTransparent: true,
     });
-  }, [handleOnSwapCameraPress, navigation]);
+  }, [handleOnSwapCameraPress, headerHeight, navigation]);
 
   useEffect(
     () => () => {

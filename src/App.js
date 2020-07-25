@@ -1,8 +1,9 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator, TransitionSpecs, CardStyleInterpolators, useHeaderHeight} from '@react-navigation/stack';
+import {createStackNavigator, TransitionSpecs, CardStyleInterpolators} from '@react-navigation/stack';
 import {StatusBar, Platform} from 'react-native';
 import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
+// eslint-disable-next-line import/no-unresolved
 import {getDefaultHeaderHeight} from '@react-navigation/stack/src/views/Header/HeaderSegment';
 
 import HomeScreen from './screens/HomeScreen';
