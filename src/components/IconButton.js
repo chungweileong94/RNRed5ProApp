@@ -6,7 +6,7 @@ const IconButton = ({iconName, onPress, containerStyle}) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <Pressable android_ripple={{color: '#0003'}} style={styles.pressable} onPress={onPress}>
-        <Icon name={iconName} size={24} color="#000" />
+        <Icon name={iconName} size={24} color="#fff" />
       </Pressable>
     </View>
   );

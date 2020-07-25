@@ -1,7 +1,9 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {StatusBar} from 'react-native';
+import {createStackNavigator, TransitionSpecs, CardStyleInterpolators, useHeaderHeight} from '@react-navigation/stack';
+import {StatusBar, Platform} from 'react-native';
+import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
+import {getDefaultHeaderHeight} from '@react-navigation/stack/src/views/Header/HeaderSegment';
 
 import HomeScreen from './screens/HomeScreen';
 import BroadcastScreen from './screens/BroadcastScreen';
@@ -9,11 +11,37 @@ import BroadcastScreen from './screens/BroadcastScreen';
 const AppStack = createStackNavigator();
 
 const App = () => {
+  const windowDimen = useWindowDimensions();
+
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
       <NavigationContainer>
-        <AppStack.Navigator screenOptions={{headerTitleAlign: 'center'}}>
+        <AppStack.Navigator
+          screenOptions={{
+            headerStatusBarHeight: Platform.select({android: 0}),
+            headerStyle: {
+              backgroundColor: '#7e57c2',
+              height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight),
+            },
+            headerTintColor: '#fff',
+            headerTitleContainerStyle: {
+              paddingTop: StatusBar.currentHeight,
+            },
+            headerLeftContainerStyle: {
+              paddingTop: StatusBar.currentHeight,
+            },
+            headerRightContainerStyle: {
+              paddingTop: StatusBar.currentHeight,
+            },
+            headerTitleAlign: 'center',
+            transitionSpec: {
+              open: TransitionSpecs.TransitionIOSSpec,
+              close: TransitionSpecs.TransitionIOSSpec,
+            },
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        >
           <AppStack.Screen name="Home" component={HomeScreen} />
           <AppStack.Screen name="Broadcast" component={BroadcastScreen} options={{gestureEnabled: false}} />
         </AppStack.Navigator>
