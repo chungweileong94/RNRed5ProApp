@@ -2,12 +2,14 @@ import React from 'react';
 import {View, Pressable, Text, StyleSheet, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
+import {primaryColor} from '../var/theme';
+
 const Button = ({label, leftIconName, onPress}) => {
   return (
     <View style={styles.iosShadowWrapper}>
       <View style={styles.container}>
         <Pressable android_ripple={{color: '#0003'}} style={styles.pressable} onPress={onPress}>
-          {!!leftIconName && <Icon name={leftIconName} size={16} style={styles.leftIcon} />}
+          {!!leftIconName && <Icon name={leftIconName} size={16} style={styles.leftIcon} color="white" />}
           <Text style={styles.text}>{label}</Text>
         </Pressable>
       </View>
@@ -28,17 +30,17 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 25,
     overflow: 'hidden',
-
     elevation: 4,
   },
   pressable: ({pressed}) => ({
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 30,
-    ...(Platform.OS === 'ios' ? {backgroundColor: pressed ? '#e7e7e7' : 'white'} : {backgroundColor: 'white'}),
+    ...(Platform.OS === 'ios'
+      ? {backgroundColor: pressed ? '#e7e7e7' : primaryColor}
+      : {backgroundColor: primaryColor}),
   }),
   leftIcon: {
     marginRight: 8,
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: 'bold',
     fontSize: 16,
+    color: 'white',
   },
 });
 
