@@ -8,6 +8,7 @@ import {getDefaultHeaderHeight} from '@react-navigation/stack/src/views/Header/H
 
 import HomeScreen from './screens/HomeScreen';
 import BroadcastScreen from './screens/BroadcastScreen';
+import {primaryColor} from './var/theme';
 
 const AppStack = createStackNavigator();
 
@@ -22,7 +23,7 @@ const App = () => {
           screenOptions={{
             headerStatusBarHeight: Platform.select({android: 0}),
             headerStyle: {
-              backgroundColor: '#7e57c2',
+              backgroundColor: primaryColor,
               height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight),
             },
             headerTintColor: '#fff',

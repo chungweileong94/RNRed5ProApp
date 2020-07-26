@@ -1,31 +1,35 @@
-import React, {useRef, useMemo, useImperativeHandle, forwardRef, useState, useCallback} from 'react';
+import React, {useRef, useImperativeHandle, forwardRef, useState, useCallback, useMemo} from 'react';
 import {findNodeHandle, View, StyleSheet, InteractionManager} from 'react-native';
-import {R5VideoView, R5LogLevel, publish, unpublish, swapCamera} from 'react-native-red5pro';
+import {R5VideoView, publish, unpublish, swapCamera} from 'react-native-red5pro';
 import {v4 as uuidv4} from 'uuid';
 import Icon from 'react-native-vector-icons/Feather';
 import KeepAwake from 'react-native-keep-awake';
 import {useFocusEffect} from '@react-navigation/native';
 
-const BroadcastView = (_, ref) => {
+const BroadcastView = ({host, licenseKey}, ref) => {
   const videoRef = useRef(null);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  const configuration = useMemo(() => {
+  const config = useMemo(() => {
     const uid = uuidv4();
 
+    if (!host || !licenseKey) {
+      return null;
+    }
+
     return {
-      host: '192.168.68.111',
+      host,
       port: 8554,
       contextName: 'live',
       bufferTime: 0.5,
       streamBufferTime: 2,
       key: uid,
       bundleID: 'com.red5pro.reactnative',
-      licenseKey: '53CT-7XXE-VFAB-1XRV',
+      licenseKey,
       streamName: uid,
     };
-  }, []);
+  }, [host, licenseKey]);
 
   const onConfigured = () => {
     setIsConfigured(true);
@@ -37,49 +41,51 @@ const BroadcastView = (_, ref) => {
   };
 
   const onUnpublishNotification = () => {
-    console.log('Stop');
+    console.log('Unpublished');
   };
 
   useImperativeHandle(
     ref,
     () => ({
       unpublish: () => {
-        unpublish(findNodeHandle(videoRef.current));
+        isReady && unpublish(findNodeHandle(videoRef.current));
       },
       swapCamera: () => {
-        swapCamera(findNodeHandle(videoRef.current));
+        isReady && swapCamera(findNodeHandle(videoRef.current));
       },
     }),
-    [],
+    [isReady],
   );
 
   useFocusEffect(
     useCallback(() => {
       const task = InteractionManager.runAfterInteractions(() => {
         if (isConfigured && !isReady) {
-          const {streamName} = configuration;
+          const {streamName} = config;
           publish(findNodeHandle(videoRef.current), streamName);
         }
       });
 
       return () => task.cancel();
-    }, [configuration, isConfigured, isReady]),
+    }, [config, isConfigured, isReady]),
   );
 
   return (
     <View style={styles.container}>
       <KeepAwake />
-      <R5VideoView
-        ref={videoRef}
-        configuration={configuration}
-        enableBackgroundStreaming
-        // showDebugView
-        logLevel={R5LogLevel.DEBUG}
-        onConfigured={onConfigured}
-        onPublisherStreamStatus={onPublisherStreamStatus}
-        onUnpublishNotification={onUnpublishNotification}
-        style={styles.video}
-      />
+      {!!config && (
+        <R5VideoView
+          ref={videoRef}
+          configuration={config}
+          enableBackgroundStreaming
+          // showDebugView
+          // logLevel={R5LogLevel.DEBUG}
+          onConfigured={onConfigured}
+          onPublisherStreamStatus={onPublisherStreamStatus}
+          onUnpublishNotification={onUnpublishNotification}
+          style={styles.video}
+        />
+      )}
       {!isReady && (
         <View style={styles.placeHolder}>
           <Icon name="video" size={40} color="white" />

@@ -1,7 +1,8 @@
-import React, {useRef, useEffect, useCallback, useLayoutEffect} from 'react';
-import {View, StyleSheet, BackHandler} from 'react-native';
+import React, {useRef, useEffect, useCallback, useLayoutEffect, useState} from 'react';
+import {View, StyleSheet, BackHandler, Alert} from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {useHeaderHeight} from '@react-navigation/stack';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import BroadcastView from '../components/BroadcastView';
 import IconButton from '../components/IconButton';
@@ -11,13 +12,15 @@ const BroadcastScreen = () => {
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
   const broadcastRef = useRef(null);
+  const [host, setHost] = useState(null);
+  const [license, setLicense] = useState(null);
 
   const handleOnStopPress = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
   const handleOnSwapCameraPress = useCallback(() => {
-    broadcastRef.current.swapCamera();
+    broadcastRef.current?.swapCamera();
   }, []);
 
   useLayoutEffect(() => {
@@ -31,26 +34,39 @@ const BroadcastScreen = () => {
     });
   }, [handleOnSwapCameraPress, headerHeight, navigation]);
 
-  useEffect(
-    () => () => {
-      broadcastRef.current.unpublish();
-    },
-    [],
-  );
+  useEffect(() => {
+    const broadcastCleanUpRef = broadcastRef.current;
+
+    (async function () {
+      const asyncStorageValues = await AsyncStorage.multiGet(['host', 'license']);
+      const {host: _host, license: _license} = Object.fromEntries(asyncStorageValues);
+
+      if (!_host || !_license) {
+        Alert.alert('Configuration Failed', 'Please make sure you have setup the host & license key.');
+        navigation.goBack();
+        return;
+      }
+
+      setHost(_host);
+      setLicense(_license);
+    })();
+
+    return () => {
+      broadcastCleanUpRef?.unpublish();
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => true;
-
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, []),
   );
 
   return (
     <View style={styles.container}>
-      <BroadcastView ref={broadcastRef} />
+      <BroadcastView ref={broadcastRef} host={host} licenseKey={license} />
       <View style={styles.startButtonWrapper}>
         <Button label="Stop" leftIconName="x" onPress={handleOnStopPress} />
       </View>
@@ -62,6 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    backgroundColor: 'black',
   },
   startButtonWrapper: {
     position: 'absolute',
