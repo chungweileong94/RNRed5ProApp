@@ -24,7 +24,9 @@ const App = () => {
             headerStatusBarHeight: Platform.select({android: 0}),
             headerStyle: {
               backgroundColor: primaryColor,
-              height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight),
+              ...(Platform.OS === 'android'
+                ? {height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight)}
+                : {}),
             },
             headerTintColor: '#fff',
             headerTitleContainerStyle: {

@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Pressable, Text, StyleSheet, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {primaryColor} from '../var/theme';
+import {primaryColor, darkPrimaryColor} from '../var/theme';
 
 const Button = ({label, leftIconName, onPress}) => {
   return (
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 30,
     ...(Platform.OS === 'ios'
-      ? {backgroundColor: pressed ? '#e7e7e7' : primaryColor}
+      ? {backgroundColor: pressed ? darkPrimaryColor : primaryColor}
       : {backgroundColor: primaryColor}),
   }),
   leftIcon: {
