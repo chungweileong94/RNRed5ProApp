@@ -35,8 +35,6 @@ const BroadcastScreen = () => {
   }, [handleOnSwapCameraPress, headerHeight, navigation]);
 
   useEffect(() => {
-    const broadcastCleanUpRef = broadcastRef.current;
-
     (async function () {
       const asyncStorageValues = await AsyncStorage.multiGet(['host', 'license']);
       const {host: _host, license: _license} = Object.fromEntries(asyncStorageValues);
@@ -52,9 +50,10 @@ const BroadcastScreen = () => {
     })();
 
     return () => {
-      broadcastCleanUpRef?.unpublish();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      broadcastRef.current?.unpublish();
     };
-  }, []);
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
