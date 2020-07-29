@@ -52,10 +52,12 @@ const SettingsModal = (_, ref) => {
 
   useEffect(() => {
     (async function () {
+      if (!isShow) return;
+
       const values = await AsyncStorage.multiGet(['host', 'license']);
       setForm(Object.fromEntries(values));
     })();
-  }, []);
+  }, [isShow]);
 
   return (
     <Modal

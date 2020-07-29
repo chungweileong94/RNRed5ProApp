@@ -1,11 +1,17 @@
 import React from 'react';
 import {View, Pressable, Text, StyleSheet, Platform} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 
-const ListItem = ({label, onPress}) => {
+import {primaryColor} from '../var/theme';
+
+const ListItem = ({label, iconName, onPress}) => {
   return (
     <View style={styles.wrapper}>
       <Pressable android_ripple={{color: '#0003'}} onPress={onPress} style={styles.pressable}>
-        <Text style={styles.label}>{label}</Text>
+        <Icon name={iconName} size={24} color={primaryColor} />
+        <Text numberOfLines={1} style={styles.label}>
+          {label}
+        </Text>
       </Pressable>
     </View>
   );
@@ -18,12 +24,17 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   pressable: ({pressed}) => ({
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 24,
     paddingHorizontal: 20,
     ...(Platform.OS === 'ios' ? {backgroundColor: pressed ? '#0003' : 'transparent'} : {}),
   }),
   label: {
-    fontWeight: 'bold',
+    flex: 1,
+    fontSize: 18,
+    lineHeight: 20,
+    marginLeft: 12,
   },
 });
 

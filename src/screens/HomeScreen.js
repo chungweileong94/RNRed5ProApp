@@ -57,7 +57,7 @@ const HomeScreen = () => {
         <FlatList
           data={liveStreams}
           keyExtractor={item => item}
-          renderItem={({item}) => <ListItem label={item} onPress={handleOnStreamPress(item)} />}
+          renderItem={({item}) => <ListItem label={item} iconName="radio" onPress={handleOnStreamPress(item)} />}
           refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

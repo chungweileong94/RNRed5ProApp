@@ -5,10 +5,20 @@ export const useLiveStreams = () =>
   useQuery(
     'liveStream',
     async () => {
+      const controller = new AbortController();
+      const {signal} = controller;
+
       const host = await AsyncStorage.getItem('host');
-      const res = await fetch(`http://${host}:5080/api/v1/applications/live/streams?accessToken=abc123`);
+      const res = await fetch(`http://${host}:5080/api/v1/applications/live/streams?accessToken=abc123`, {
+        method: 'GET',
+        signal,
+      });
+
       const data = await res.json();
-      return data;
+
+      const promiseWrapper = Promise.resolve(data);
+      promiseWrapper.cancel = () => controller.abort();
+      return promiseWrapper;
     },
     {
       refetchInterval: 5000,
