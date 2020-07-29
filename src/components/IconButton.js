@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 50,
     overflow: 'hidden',
-    margin: 4,
+    marginHorizontal: 6,
+    marginVertical: 6,
   },
   pressable: ({pressed}) => ({
     height: '100%',
