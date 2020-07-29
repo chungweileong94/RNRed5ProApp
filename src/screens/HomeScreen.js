@@ -38,8 +38,8 @@ const HomeScreen = () => {
   };
 
   const handleOnStreamPress = useCallback(
-    streamId => () => {
-      navigation.navigate('View', {streamId});
+    streamName => () => {
+      navigation.navigate('View', {streamName});
     },
     [navigation],
   );
