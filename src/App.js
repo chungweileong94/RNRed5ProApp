@@ -9,6 +9,7 @@ import {getDefaultHeaderHeight} from '@react-navigation/stack/src/views/Header/H
 import HomeScreen from './screens/HomeScreen';
 import BroadcastScreen from './screens/BroadcastScreen';
 import {primaryColor} from './var/theme';
+import ViewerScreen from './screens/ViewerScreen';
 
 const AppStack = createStackNavigator();
 
@@ -48,6 +49,7 @@ const App = () => {
         >
           <AppStack.Screen name="Home" component={HomeScreen} />
           <AppStack.Screen name="Broadcast" component={BroadcastScreen} options={{gestureEnabled: false}} />
+          <AppStack.Screen name="View" component={ViewerScreen} />
         </AppStack.Navigator>
       </NavigationContainer>
     </>
