@@ -10,6 +10,7 @@ import HomeScreen from './screens/HomeScreen';
 import BroadcastScreen from './screens/BroadcastScreen';
 import {primaryColor} from './var/theme';
 import ViewerScreen from './screens/ViewerScreen';
+import urls from './var/urls';
 
 const AppStack = createStackNavigator();
 
@@ -25,9 +26,11 @@ const App = () => {
             headerStatusBarHeight: Platform.select({android: 0}),
             headerStyle: {
               backgroundColor: primaryColor,
-              ...(Platform.OS === 'android'
-                ? {height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight)}
-                : {}),
+              ...Platform.select({
+                android: {
+                  height: getDefaultHeaderHeight(windowDimen, StatusBar.currentHeight),
+                },
+              }),
             },
             headerTintColor: '#fff',
             headerTitleContainerStyle: {
@@ -47,9 +50,9 @@ const App = () => {
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         >
-          <AppStack.Screen name="Home" component={HomeScreen} />
-          <AppStack.Screen name="Broadcast" component={BroadcastScreen} options={{gestureEnabled: false}} />
-          <AppStack.Screen name="View" component={ViewerScreen} />
+          <AppStack.Screen name={urls.HOME} component={HomeScreen} />
+          <AppStack.Screen name={urls.BROADCAST} component={BroadcastScreen} options={{gestureEnabled: false}} />
+          <AppStack.Screen name={urls.VIEWER} component={ViewerScreen} />
         </AppStack.Navigator>
       </NavigationContainer>
     </>

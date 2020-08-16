@@ -4,10 +4,11 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 
 import IconButton from '../components/IconButton';
-import {requestPermissions, MY_PERMISSIONS} from '../utils/permissions';
 import SettingsModal from '../components/SettingsModal';
-import {useLiveStreams} from '../api';
 import ListItem from '../components/ListItem';
+import {requestPermissions, MY_PERMISSIONS} from '../utils/permissions';
+import {useLiveStreams} from '../api';
+import urls from '../var/urls';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -30,7 +31,7 @@ const HomeScreen = () => {
       return;
     }
 
-    navigation.navigate('Broadcast');
+    navigation.navigate(urls.BROADCAST);
   }, [navigation]);
 
   const handleOnSettingsPress = () => {
@@ -39,7 +40,7 @@ const HomeScreen = () => {
 
   const handleOnStreamPress = useCallback(
     streamName => () => {
-      navigation.navigate('View', {streamName});
+      navigation.navigate(urls.VIEWER, {streamName});
     },
     [navigation],
   );
